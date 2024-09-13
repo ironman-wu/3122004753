@@ -1,6 +1,8 @@
 import re
 import string
 import sys
+import unittest
+
 import jieba
 import os
 from line_profiler import LineProfiler
@@ -65,7 +67,7 @@ def cosine_similarity(x, y, z):      #计算余弦相似值
         multiply_self_x = value1**2 + multiply_self_x
         multiply_self_y = value2**2 + multiply_self_y
     if multiply_each_other != 0:
-        return multiply_each_other / (multiply_self_y * multiply_self_x)**(1/2)
+        return "{:.2f}".format(multiply_each_other / (multiply_self_y * multiply_self_x)**(1/2))        #返回结果
     if multiply_each_other == 0:            #防止分母为‘0’
         return 0
 
@@ -79,7 +81,7 @@ def main():         #总程序
         exit(0)
 
     text_standard = ""  #   原文文件的地址 C:/Users/唔知/Desktop/学习/软件过程/第二次作业/样例/orig.txt
-    text_plagiarize = ""  #  抄袭文件的地址 C:/Users/唔知/Desktop/学习/软件过程/第二次作业/样例/orig_0.8_add.txt
+    text_plagiarize = ""  #  抄袭文件的地址  C:/Users/唔知/Desktop/学习/软件过程/第二次作业/样例/orig_0.8_add.txt
 
     text = [text_standard, text_plagiarize]
 
@@ -111,7 +113,25 @@ def main():         #总程序
         print(result)
         f.write(str(result) + '\n')
     f.close()
+    #unittest.main()
 
+class TestMyFunction(unittest.TestCase):
+    def test_read_clean_file(self):
+        path = 'D:/study/pycharm/pythonProject4/Unit_tests'
+        result = read_clean_file(path)
+        self.assertEqual(result, "这是一个测试用例")
+    def test_merge_keywords(self):
+        result = merge_keywords(text_x={'我们':4,'现在':1,'很好':2},text_y={'我们':2,'未来':8,'不错':9})
+        self.assertEqual(result,{'我们','现在','未来','很好','不错'})
+    def test_sort_keywords(self):
+        result = sort_keywords({'我们':3,'陪着':8,'她们':9},{'他们':2,'陪着':2,'我们':2},{'我们','他们','她们','陪着'})
+        self.assertEqual(result,({'我们':3,'陪着':8,'她们':9,'他们':0},{'他们':2,'陪着':2,'我们':2,'她们':0}))
+    def test_word_frequency(self):
+        result = word_frequency('我们上学开心我们')
+        self.assertEqual(result,{'我们':2,'上学':1,'开心':1})
+    def test_cosine_similarity(self):
+        result = cosine_similarity({'谁的':3,'书本':3,},{'他们':2,'陪着':2},{'谁的','他们','陪着','书本'})
+        self.assertEqual(result,0)
 
 
 
